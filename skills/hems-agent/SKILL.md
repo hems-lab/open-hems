@@ -20,13 +20,16 @@ This skill equips any AI coding agent with the tools and heuristics required to 
 2. **Hardware Abstraction Layer (HAL) Mapping**:
    - Generates or updates `packages/hems/00_hems_hardware_abstraction.yaml`.
    - Never breaks existing user entity names; binds them through standard `hems_*` template sensors.
-3. **Belgian Tariff & Economic Optimization**:
-   - Fluvius Capacity Tariff (Capaciteitstarief): Maintains 15-minute rolling averages under the 3.15 kW threshold to save hundreds of euros in grid penalties.
-   - Dynamic Tariffs (Mega, Octopus, Ecopower, Tibber, Nord Pool / Entso-e): Computes all-in import cost vs. injection return.
+3. **Regional Market Adapters & Economic Optimization**:
+   - **Belgium (Flanders / Fluvius)**: Enforces 15-minute capacity tariff (Capaciteitstarief) peak-shaving (< 3.15 kW baseline), Belpex day-ahead spot dispatching, and high solar injection contracts (e.g. Ecopower / Engie).
+   - **Netherlands (DSMR / Netcongestie)**: Optimizes self-consumption to eliminate solar "terugleverkosten" following the phase-out of net-metering (salderingsregeling).
+   - **Germany (§14a EnWG)**: Automates controllable consumer regulation (dimming of EV chargers & heat pumps during peak congestion).
+   - **Generic EU (Nord Pool / EPEX)**: Hourly spot price arbitrage and battery storage dispatching.
 4. **Senior & Family Energy Advisory Integration**:
    - Links directly to the accessible [HEMS Energy Advisor](https://hems-cfo-dashboard.vercel.app/advies) for senior citizens and family members.
 
 ## 🛠️ Heuristics & Rules for Agents
+- **Determine Country / Market First**: Prompt or detect whether the installation is in Belgium (BE), Netherlands (NL), Germany (DE), or other EU regions to apply the appropriate tariff logic.
 - **Never expose secrets or private personal data**: Always keep tokens in `.env` or `secrets.yaml`.
 - **Inertia vs. Rapid Convection**: Recognize heating topologies. Floor heating (hydronic) has high thermal inertia (1.5 - 3 hours) and should never have aggressive nighttime setbacks (< 19.5°C). Air-to-air heat pumps have rapid response (5-10 minutes) and are ideal for daytime solar pre-heating.
 - **Continuous Validation**: Run `ha core check` or validate YAML syntax whenever updating packages.

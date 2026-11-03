@@ -6,7 +6,7 @@
 [![Live Advisor](https://img.shields.io/badge/Live%20Advisor-88%2B%20Senior%20Friendly-amber.svg)](https://hems-cfo-dashboard.vercel.app/advies)
 
 > **Autonomous, economic, and grid-aware Home Energy Management System (HEMS) for Home Assistant.**  
-> Built for the Belgian digital meter, Fluvius capacity tariff peak-shaving, dynamic Belpex/spot tariffs, and solar surplus dispatching.
+> Native support for the **Belgian market (Fluvius digital meter, Capacity Tariff peak-shaving, dynamic Belpex spot tariffs)**, with an extensible **European Market Adapter architecture (Netherlands, Germany, EU Spot)**.
 
 ---
 
@@ -17,13 +17,26 @@ Looking for an ultra-simple, accessible energy switch calculator for seniors, pa
 
 ---
 
+## 🌍 Regional Market Adapters & European Roadmap
+
+Energy grids across Europe are shifting from flat rates to dynamic tariffs and capacity-based network costs. Open HEMS is structured around plug-and-play **Market Adapters**:
+
+| Country / Region | Grid & Meter Standard | Tariff & Optimization Focus | Status |
+| :--- | :--- | :--- | :---: |
+| 🇧🇪 **Belgium (Flanders)** | Fluvius P1 Digital Meter (DSMR) | **Capaciteitstarief (Peak Shaving < 3.15 kW)** + Belpex Spot Tariffs & Solar Injection | 🟢 **Production** |
+| 🇳🇱 **Netherlands** | DSMR P1 Slimme Meter (HomeWizard / SlimmeLezer) | **Terugleverkosten Shaving** + EPEX Spot (Tibber / ANWB) + Netcongestie Buffer | 🟡 **Adapter Ready** |
+| 🇩🇪 **Germany** | Smart Meter Gateway / Pulse | **§14a EnWG Controllable Consumers** (Heat Pump / EV Dimming) + Dynamic EPEX | 🟡 **Adapter Ready** |
+| 🇪🇺 **EU / Nordics** | Generic P1 / MQTT / Modbus | **Nord Pool / Day-Ahead Hourly Optimization** + Self-Consumption Boost | 🟢 **Production** |
+
+---
+
 ## 🏛️ Architecture & Hardware Abstraction
 
-Open HEMS decouples your physical meters from the optimization algorithms via a **Hardware Abstraction Layer (HAL)**:
+Open HEMS decouples your physical meters and country-specific rules via a **Hardware Abstraction Layer (HAL)**:
 
 ```mermaid
 flowchart TD
-    subgraph Hardware["1. Physical Hardware"]
+    subgraph Hardware["1. Physical Hardware (Universal)"]
         P1["P1 Digital Meter (HomeWizard / SlimmeLezer / DSMR)"]
         PV["Solar Inverter (SolarEdge / SMA / Enphase / Huawei / Growatt)"]
         GAS["Gas Meter (P1 Gas Channel / HomeWizard Gas / Pulse)"]
@@ -37,15 +50,22 @@ flowchart TD
         C_HOU["hems_household_consumption_power"]
     end
 
-    subgraph Engine["3. Optimization & Intelligence"]
-        PEAK["Belgian Capacity Tariff Peak Shaver (<3.15 kW)"]
-        DISP["Smart Appliance Solar Dispatcher (Dishwasher / Dryer)"]
-        CFO["CFO Cost Management & Belgian Market Comparator"]
-        AI["Universal AI Agent Skill (Antigravity / Cursor / Claude)"]
+    subgraph Markets["3. Regional Market Adapters"]
+        BE["🇧🇪 Belgium: Fluvius Capacity Tariff + Belpex Spot"]
+        NL["🇳🇱 Netherlands: DSMR + Terugleverkosten + EPEX"]
+        DE["🇩🇪 Germany: §14a EnWG Dimming + EPEX Spot"]
+        EU["🇪🇺 Generic EU: Nord Pool Day-Ahead Spot"]
+    end
+
+    subgraph Engine["4. Optimization & AI Agent Skill"]
+        PEAK["Peak Shaving Engine (<3.15 kW drempel)"]
+        DISP["Smart Appliance Solar Dispatcher (Vaatwasser/Droogkast)"]
+        AI["Google Antigravity & AI Agent Skill (.agents/skills/)"]
     end
 
     Hardware --> HAL
-    HAL --> Engine
+    HAL --> Markets
+    Markets --> Engine
 ```
 
 ---
