@@ -1,0 +1,102 @@
+name: Monitor Community & Regional Triggers
+
+on:
+  issues:
+    types: [opened, edited]
+  schedule:
+    # Runs every Monday morning at 08:00 UTC to evaluate regional demand
+    - cron: '0 8 * * 1'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  triage-and-monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Analyze Issue for Regional Market Triggers
+        if: github.event_name == 'issues'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const text = `${issue.title} ${issue.body}`.toLowerCase();
+            const labelsToAdd = [];
+            let market = null;
+
+            if (text.includes('nederland') || text.includes('netherlands') || text.includes('teruglever') || text.includes('salder')) {
+              labelsToAdd.push('market/netherlands', 'i18n/dutch-nl');
+              market = 'Netherlands (NL)';
+            }
+            if (text.includes('france') || text.includes('français') || text.includes('wallonie') || text.includes('bruxelles')) {
+              labelsToAdd.push('market/france', 'i18n/french');
+              market = 'France / Wallonia (FR)';
+            }
+            if (text.includes('germany') || text.includes('deutschland') || text.includes('14a') || text.includes('enwg')) {
+              labelsToAdd.push('market/germany', 'i18n/german');
+              market = 'Germany (DE)';
+            }
+            if (text.includes('senior') || text.includes('eenvoudig') || text.includes('toegankelijk') || text.includes('ouderen')) {
+              labelsToAdd.push('feedback/senior-ux');
+            }
+
+            if (labelsToAdd.length > 0) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                labels: labelsToAdd
+              });
+              
+              if (market) {
+                const commentBody = `👋 Hello @${issue.user.login}!\n\nThank you for reaching out regarding **${market}**! We are tracking community demand for regional market adapters and languages.\n\nYour request has been automatically tagged with our telemetry monitor. Once a regional threshold (>= 3 community requests) or seasonal milestone is met, our roadmap triggers the official adapter release.\n\nSee our [European Roadmap](https://github.com/hems-lab/open-hems#readme) for more details.`;
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  body: commentBody
+                });
+              }
+            }
+
+      - name: Weekly Regional Demand Pulse Audit
+        uses: actions/github-script@v7
+        with:
+          script: |
+            console.log("🔍 Checking regional market demand across open issues...");
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'all'
+            });
+
+            let nlCount = 0;
+            let frCount = 0;
+            let deCount = 0;
+            let seniorUxCount = 0;
+
+            for (const issue of issues.data) {
+              const labels = issue.labels.map(l => typeof l === 'string' ? l : l.name);
+              if (labels.includes('market/netherlands')) nlCount++;
+              if (labels.includes('market/france')) frCount++;
+              if (labels.includes('market/germany')) deCount++;
+              if (labels.includes('feedback/senior-ux')) seniorUxCount++;
+            }
+
+            console.log(`📊 Current Telemetry Demand Count:`);
+            console.log(`  • Netherlands (NL): ${nlCount} / 3 threshold`);
+            console.log(`  • France / Wallonia (FR): ${frCount} / 3 threshold`);
+            console.log(`  • Germany (DE): ${deCount} / 3 threshold`);
+            console.log(`  • Senior UX Feedback: ${seniorUxCount} reports`);
+
+            if (nlCount >= 3) {
+              console.log("🚨 MILESTONE REACHED: Netherlands (NL) adapter release trigger met!");
+            }
+            if (frCount >= 3) {
+              console.log("🚨 MILESTONE REACHED: France/Wallonia (FR) adapter release trigger met!");
+            }
+            if (deCount >= 3) {
+              console.log("🚨 MILESTONE REACHED: Germany (DE) adapter release trigger met!");
+            }

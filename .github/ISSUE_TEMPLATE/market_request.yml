@@ -1,0 +1,35 @@
+name: 🌍 Request Regional Market Adapter or Language (i18n)
+description: Request support for a new country, regional tariff structure, or language.
+title: "[Market/i18n Request]: <Country or Language>"
+labels: ["community-request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping us expand Open HEMS across Europe!
+        Our automated monitor tracks community demand to trigger official releases.
+  - type: dropdown
+    id: region
+    attributes:
+      label: Target Country / Region
+      description: Which energy market are you requesting?
+      options:
+        - Netherlands (NL) — DSMR P1, Terugleverkosten & Netcongestie
+        - France / Wallonia (FR) — Linky / ORES / Sibelga & French i18n
+        - Germany (DE) — §14a EnWG Controllable Devices & German i18n
+        - Other EU / Nordics (Nord Pool / EPEX Spot)
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Grid & Tariff Context
+      description: What specific tariff mechanism (e.g. dynamic spot, capacity peaks, solar feed-in penalties) does your grid use?
+      placeholder: "e.g. In the Netherlands, energy providers charge terugleverkosten for solar injection, and we use DSMR 5.0 smart meters."
+    validations:
+      required: true
+  - type: textarea
+    id: hardware
+    attributes:
+      label: Smart Meter / Hardware Interface
+      description: What meter or inverter are you using? (HomeWizard P1, SlimmeLezer, SolarEdge, Huawei, etc.)

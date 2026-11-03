@@ -1,0 +1,32 @@
+name: 👵 Senior & Family UX Feedback
+description: Provide feedback on the accessibility, simplicity, and usability of the energy advisor.
+title: "[Senior UX Feedback]: "
+labels: ["feedback/senior-ux"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        We are committed to making energy advisory simple and accessible for senior citizens (88+ friendly) and family members.
+  - type: dropdown
+    id: role
+    attributes:
+      label: Who tested the advisor?
+      options:
+        - A senior citizen directly
+        - A family member / adult child on their behalf
+        - A domotics enthusiast
+    validations:
+      required: true
+  - type: textarea
+    id: experience
+    attributes:
+      label: How was the experience?
+      description: Were the font sizes large enough? Was the 3-step wizard clear?
+      placeholder: "e.g. My 85-year old mother tested this on an iPad. The large buttons were great, but she wondered about..."
+    validations:
+      required: true
+  - type: textarea
+    id: suggestions
+    attributes:
+      label: Suggested Improvements
+      description: Any buttons, wording, or features that would make it even easier?
