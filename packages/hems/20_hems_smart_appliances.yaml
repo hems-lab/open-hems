@@ -1,0 +1,66 @@
+# ==============================================================================
+# HEMS Lab — Intelligent Appliance Dispatcher (Dishwasher / Dryer / Heat Pump)
+# ==============================================================================
+# Autonomous load-shifting engine that delays high-consumption appliances to:
+# 1. Solar Production Valleys (maximizing self-consumption).
+# 2. Nighttime Low Spot Prices (avoiding morning & evening peak tariffs).
+# 3. Peak-Shaving Guard (pauses or prevents starts if grid power approaches capacity threshold).
+# ==============================================================================
+
+input_boolean:
+  hems_dishwasher_automation_enabled:
+    name: "HEMS Vaatwasser Slimme Dispatching"
+    icon: mdi:dishwasher
+
+  hems_dishwasher_ready_for_cycle:
+    name: "HEMS Vaatwasser Beladen & Klaar"
+    icon: mdi:check-circle-outline
+
+binary_sensor:
+  - platform: template
+    sensors:
+      hems_solar_surplus_available:
+        friendly_name: "HEMS Zonne-overschot Beschikbaar (>1.5 kW)"
+        icon_template: mdi:solar-power-variant
+        value_template: >-
+          {{ (states('sensor.hems_grid_export_power') | float(0)) >= 1500 }}
+
+      hems_safe_grid_headroom:
+        friendly_name: "HEMS Veilige Netruimte (Geen Piek Excursie)"
+        icon_template: mdi:shield-check
+        value_template: >-
+          {% set cur = states('sensor.hems_grid_import_power') | float(0) %}
+          {% set limit_w = (states('input_number.hems_capacity_tariff_warning_threshold_kw') | float(3.15)) * 1000 %}
+          {{ (cur + 1800) < limit_w }}
+
+automation:
+  - id: hems_dishwasher_solar_dispatch
+    alias: "HEMS — Start Vaatwasser op Zonne-overschot"
+    description: "Start de vaatwasser zodra er minstens 15 minuten lang zonne-overschot is én veilige netruimte."
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.hems_solar_surplus_available
+        to: "on"
+        for:
+          minutes: 15
+    condition:
+      - condition: state
+        entity_id: input_boolean.hems_dishwasher_automation_enabled
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.hems_dishwasher_ready_for_cycle
+        state: "on"
+      - condition: state
+        entity_id: binary_sensor.hems_safe_grid_headroom
+        state: "on"
+    action:
+      - service: homeassistant.turn_on
+        target:
+          entity_id: switch.vaatwasser_start
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.hems_dishwasher_ready_for_cycle
+      - service: notify.notify
+        data:
+          title: "⚡ HEMS Zonne-dispatching"
+          message: "Vaatwasser gestart op gratis zonnestroom!"

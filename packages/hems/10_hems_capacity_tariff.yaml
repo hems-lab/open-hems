@@ -1,0 +1,50 @@
+# ==============================================================================
+# HEMS Lab — Belgian Capacity Tariff (Fluvius Capaciteitstarief) Monitor
+# ==============================================================================
+# Tracks 15-minute rolling average peak power, notifies of upcoming peak excursions,
+# and enforces peak-shaving thresholds (default baseline: 2.50 kW - 3.15 kW).
+# ==============================================================================
+
+input_number:
+  hems_capacity_tariff_warning_threshold_kw:
+    name: "Capacity Tariff Warning Threshold"
+    min: 2.50
+    max: 10.00
+    step: 0.10
+    initial: 3.15
+    unit_of_measurement: "kW"
+    icon: mdi:alert-circle-outline
+
+template:
+  - sensor:
+      - name: "HEMS Current Quarter Peak Demand"
+        unique_id: hems_current_quarter_peak_demand
+        unit_of_measurement: "kW"
+        device_class: power
+        state_class: measurement
+        icon: mdi:chart-bell-curve
+        state: >-
+          {# Read peak demand from P1 meter or calculate rolling average #}
+          {% set raw = states('sensor.p1_meter_peak_demand_current_quarter') | float(0) %}
+          {% if raw > 100 %}
+            {{ (raw / 1000.0) | round(2) }}
+          {% else %}
+            {{ raw | round(2) }}
+          {% endif %}
+
+      - name: "HEMS Capacity Tariff Monthly Peak Status"
+        unique_id: hems_capacity_tariff_monthly_peak_status
+        icon: mdi:shield-check
+        state: >-
+          {% set cur = states('sensor.hems_current_quarter_peak_demand') | float(0) %}
+          {% set limit = states('input_number.hems_capacity_tariff_warning_threshold_kw') | float(3.15) %}
+          {% if cur >= limit %}
+            Piek Alarm
+          {% elif cur >= (limit * 0.85) %}
+            Waarschuwing
+          {% else %}
+            Normaal
+          {% endif %}
+        attributes:
+          peak_kw: "{{ states('sensor.hems_current_quarter_peak_demand') | float(0) }}"
+          threshold_kw: "{{ states('input_number.hems_capacity_tariff_warning_threshold_kw') | float(3.15) }}"

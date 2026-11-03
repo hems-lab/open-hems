@@ -1,0 +1,67 @@
+# ==============================================================================
+# HEMS Lab — Hardware Abstraction Layer (HAL)
+# ==============================================================================
+# This package decouples physical meters (HomeWizard, SlimmeLezer, DSMR, SolarEdge,
+# Enphase, Huawei, SMA, etc.) from the HEMS analytical and optimization engines.
+#
+# Customize the entity_id templates below or run `python scripts/discover_entities.py`
+# ==============================================================================
+
+template:
+  - sensor:
+      # ------------------------------------------------------------------------
+      # Grid Import / Export (P1 Meter)
+      # ------------------------------------------------------------------------
+      - name: "HEMS Grid Power Current"
+        unique_id: hems_grid_power_current
+        unit_of_measurement: "W"
+        device_class: power
+        state_class: measurement
+        icon: mdi:transmission-tower
+        state: >-
+          {# Replace with your P1 power sensor, e.g. sensor.p1_meter_active_power #}
+          {{ states('sensor.p1_meter_active_power') | float(0) }}
+
+      - name: "HEMS Grid Import Power"
+        unique_id: hems_grid_import_power
+        unit_of_measurement: "W"
+        device_class: power
+        state_class: measurement
+        icon: mdi:transmission-tower-import
+        state: >-
+          {% set p = states('sensor.hems_grid_power_current') | float(0) %}
+          {{ [0, p] | max }}
+
+      - name: "HEMS Grid Export Power"
+        unique_id: hems_grid_export_power
+        unit_of_measurement: "W"
+        device_class: power
+        state_class: measurement
+        icon: mdi:transmission-tower-export
+        state: >-
+          {% set p = states('sensor.hems_grid_power_current') | float(0) %}
+          {{ [0, -p] | max }}
+
+      # ------------------------------------------------------------------------
+      # Solar Photovoltaic (PV)
+      # ------------------------------------------------------------------------
+      - name: "HEMS Solar Power Current"
+        unique_id: hems_solar_power_current
+        unit_of_measurement: "W"
+        device_class: power
+        state_class: measurement
+        icon: mdi:solar-power
+        state: >-
+          {# Replace with your Solar inverter sensor, e.g. sensor.solaredge_current_power #}
+          {{ states('sensor.solaredge_current_power') | float(0) }}
+
+      - name: "HEMS Household Consumption Power"
+        unique_id: hems_household_consumption_power
+        unit_of_measurement: "W"
+        device_class: power
+        state_class: measurement
+        icon: mdi:home-lightning-bolt
+        state: >-
+          {% set grid = states('sensor.hems_grid_power_current') | float(0) %}
+          {% set solar = states('sensor.hems_solar_power_current') | float(0) %}
+          {{ [0, (solar + grid)] | max }}
