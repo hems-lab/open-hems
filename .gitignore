@@ -1,0 +1,36 @@
+# Environment & Secrets
+.env
+.env.*
+*.secret
+secrets.yaml
+*.token
+*.key
+*.pem
+credentials.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+
+# Home Assistant & OS
+.storage/
+*.db
+*.db-shm
+*.db-wal
+*.log
+home-assistant.log*
+ip_bans.yaml
+
+# IDEs & System
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.bak
