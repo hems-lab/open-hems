@@ -91,18 +91,66 @@ ha core reload
 
 ---
 
-## 🤖 Universal AI Agent Skill
+## 🤖 AI Agent-Driven Smart Home Management (Google Antigravity & Beyond)
 
-If you use an AI coding assistant (such as **Google Antigravity**, **Cursor**, **Claude Code**, or **GitHub Copilot**), simply provide it with our skill file:
+Managing a modern smart home with dynamic energy prices, capacity tariffs, solar forecasts, and HVAC thermal inertia is **too complex for manual YAML configuration**. 
 
-```markdown
-Read skills/hems-agent/SKILL.md to inspect my Home Assistant entities and optimize my HEMS setup.
+**Open HEMS is built natively for AI Pair-Programming with Google Antigravity (AGY)** and modern agentic coding environments (Claude Code, Cursor, Windsurf, Copilot Workspace). Instead of writing template sensors by hand, you delegate the heavy lifting to your AI coding agent.
+
+```
+       ┌────────────────────────────────────────────────────────┐
+       │                Your High-Level Goal                    │
+       │  "Optimize my home for Fluvius capacity tariff and     │
+       │   switch my heat pumps to solar surplus dispatching."  │
+       └───────────────────────────┬────────────────────────────┘
+                                   │
+                                   ▼
+       ┌────────────────────────────────────────────────────────┐
+       │               Google Antigravity Agent                 │
+       │   • Reads `.agents/skills/hems-agent/SKILL.md`         │
+       │   • Auto-discovers physical meters via HA REST API     │
+       │   • Maps entities to the Hardware Abstraction Layer    │
+       │   • Configures automations & runs `ha core check`      │
+       └───────────────────────────┬────────────────────────────┘
+                                   │
+                                   ▼
+       ┌────────────────────────────────────────────────────────┐
+       │                 Home Assistant Core                    │
+       │     Active, Self-Balancing Economic Energy Engine      │
+       └────────────────────────────────────────────────────────┘
 ```
 
-The agent will automatically discover your meter entities, calculate your optimal capacity tariff threshold, and configure your automations.
+### 1. How to use with Google Antigravity (AGY)
+The repository includes a ready-to-use skill in [`.agents/skills/hems-agent/SKILL.md`](.agents/skills/hems-agent/SKILL.md).
+
+1. **Open your Home Assistant workspace** in Google Antigravity.
+2. **Clone or add Open HEMS** to your workspace.
+3. **Prompt Antigravity**:
+   ```text
+   Read the hems-agent skill and inspect my Home Assistant setup.
+   Connect my P1 meter and solar inverter to the HEMS Hardware Abstraction Layer.
+   ```
+4. **Use Slash Commands for Deep Optimization**:
+   * **`/plan`**: *"Draft an economic comparison of my current energy contract against Belgian fixed vs. variable market deals."*
+   * **`/goal`**: *"Autonomously audit my white goods scheduling, eliminate morning peak-hour triggers, and verify condensing boiler efficiency."*
+
+---
+
+### 2. Example Prompts for Any AI Coding Assistant
+Whether you use **Google Antigravity**, **Claude Code**, or **Cursor**, you can copy-paste these turnkey instructions:
+
+* **Hardware Discovery & Setup:**
+  > *"Inspect my `configuration.yaml` and entity states. Map my physical smart meter (`sensor.p1_*`) and solar inverter (`sensor.solaredge_*` / `sensor.huawei_*`) to `packages/hems/00_hems_hardware_abstraction.yaml`."*
+
+* **Belgian Capacity Tariff Guard:**
+  > *"Analyze my historical peak power demand in Home Assistant. Set up a warning threshold at 3.15 kW and write an automation to pause heavy loads when grid power approaches this limit."*
+
+* **HVAC Thermal Inertia Tuning:**
+  > *"Review my heating topology. Enforce a minimum comfort baseline of 20.0°C on hydronic floor heating to prevent thermal mass loss, while utilizing rapid heat pumps for midday solar pre-heating."*
 
 ---
 
 ## 📄 License & Community
 
 Released under the **MIT License**. Maintained with ❤️ by the **[HEMS Lab](https://github.com/hems-lab)** community.
+
