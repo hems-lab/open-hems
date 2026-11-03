@@ -91,12 +91,34 @@ jobs:
             console.log(`  • Germany (DE): ${deCount} / 3 threshold`);
             console.log(`  • Senior UX Feedback: ${seniorUxCount} reports`);
 
-            if (nlCount >= 3) {
-              console.log("🚨 MILESTONE REACHED: Netherlands (NL) adapter release trigger met!");
-            }
-            if (frCount >= 3) {
-              console.log("🚨 MILESTONE REACHED: France/Wallonia (FR) adapter release trigger met!");
-            }
-            if (deCount >= 3) {
-              console.log("🚨 MILESTONE REACHED: Germany (DE) adapter release trigger met!");
+            const triggers = [
+              { name: 'Netherlands (NL)', count: nlCount, label: 'market/netherlands', flag: '🇳🇱' },
+              { name: 'France / Wallonia (FR)', count: frCount, label: 'market/france', flag: '🇫🇷' },
+              { name: 'Germany (DE)', count: deCount, label: 'market/germany', flag: '🇩🇪' },
+            ];
+
+            for (const t of triggers) {
+              if (t.count >= 3) {
+                const title = `🚨 [Release Trigger]: Community demand threshold reached for ${t.name}`;
+                const alreadyExists = issues.data.some(i => i.title === title && i.state === 'open');
+
+                if (!alreadyExists) {
+                  console.log(`🚀 Creating official release trigger issue for ${t.name}...`);
+                  await github.rest.issues.create({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    title: title,
+                    labels: ['milestone/release-triggered', t.label],
+                    body: `## ${t.flag} Community Demand Milestone Reached: ${t.name}\n\n` +
+                          `Our automated telemetry monitor has registered **${t.count} community requests** for **${t.name}**!\n\n` +
+                          `### 📋 Release Action Checklist:\n` +
+                          `- [ ] Review requested local grid mechanisms (e.g. netcongestie, terugleverkosten, §14a EnWG).\n` +
+                          `- [ ] Enable the regional language pack on the [Energy Advisor](https://hems-cfo-dashboard.vercel.app/advies).\n` +
+                          `- [ ] Tag and publish the regional adapter package.\n\n` +
+                          `*Triggered automatically by HEMS Community Monitor.*`
+                  });
+                } else {
+                  console.log(`ℹ️ Release trigger issue for ${t.name} is already open.`);
+                }
+              }
             }
