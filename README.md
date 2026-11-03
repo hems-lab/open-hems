@@ -180,3 +180,6 @@ Whether you use **Google Antigravity**, **Claude Code**, or **Cursor**, you can 
 
 Released under the **MIT License**. Maintained with ❤️ by the **[HEMS Lab](https://github.com/hems-lab)** community.
 
+* 💬 **Discussions & Feedback**: Open a [GitHub Issue](https://github.com/hems-lab/open-hems/issues) or join the conversation on the [Home Assistant Community Forum](https://community.home-assistant.io).
+* ✉️ **Contact**: [hemslab@yahoo.com](mailto:hemslab@yahoo.com)
+
