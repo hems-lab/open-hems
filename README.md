@@ -28,6 +28,12 @@ Energy grids across Europe are shifting from flat rates to dynamic tariffs and c
 | 🇩🇪 **Germany** | Smart Meter Gateway / Pulse | **§14a EnWG Controllable Consumers** (Heat Pump / EV Dimming) + Dynamic EPEX | 🟡 **Adapter Ready** |
 | 🇪🇺 **EU / Nordics** | Generic P1 / MQTT / Modbus | **Nord Pool / Day-Ahead Hourly Optimization** + Self-Consumption Boost | 🟢 **Production** |
 
+> 🌐 **Multilingual Advisory Roadmap (i18n):** With regional market adapters active across Belgium, Netherlands, Germany, and the EU, the public Senior & Family Energy Advisor (`/advies`) is slated for native multi-language support:
+> - 🇳🇱 **Nederlands (NL/BE)**: Active (Vlaanderen & Nederland)
+> - 🇫🇷 **Français (FR/BE)**: In development (Wallonie, Bruxelles & France)
+> - 🇩🇪 **Deutsch (DE)**: In development (Deutschland & Ostbelgien)
+> - 🇬🇧 **English (EN)**: In development (Universal EU / Nordics)
+
 ---
 
 ## 🏛️ Architecture & Hardware Abstraction
