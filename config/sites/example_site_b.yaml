@@ -1,0 +1,39 @@
+# ==============================================================================
+# Open HEMS — Example Site Profile B (Apartment / Low-Consumption / Fixed Tariff)
+# ==============================================================================
+# Copy to `config/sites/secondary_site.local.yaml` (gitignored) and customize.
+# NEVER commit real names, street addresses, EAN codes, IBANs, or tokens.
+# ==============================================================================
+site_id: "site_b_example"
+name: "Example Secondary Residence"
+resident: "Household B"
+
+address:
+  city: "Example Town"
+  region: "EU"
+  dwelling_type: "Apartment"
+
+grid_operator: "Example DSO"
+
+electricity:
+  ean: "541440000000000003"
+  meter_type: "Digital Smart Meter (Dual Tariff)"
+  annual_import_kwh: 1550
+  annual_export_kwh: 0
+  capacity_peak_kw: 2.95
+  solar_pv:
+    installed: false
+  battery:
+    installed: false
+
+gas:
+  ean: "541440000000000004"
+  meter_type: "Digital Gas Meter"
+  annual_consumption_kwh: 5600
+  heating_system: "Condensing Gas Boiler"
+
+current_contract:
+  provider: "Example Utility"
+  product: "Fixed 12M"
+  pricing_type: "Fixed Tariff"
+  phone_support: true

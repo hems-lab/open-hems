@@ -1,0 +1,40 @@
+# ==============================================================================
+# Open HEMS — Example Site Profile A (Solar + Battery + Dynamic Tariff)
+# ==============================================================================
+# Copy to `config/sites/my_home.local.yaml` (gitignored) and customize.
+# NEVER commit real names, street addresses, EAN codes, IBANs, or tokens.
+# ==============================================================================
+site_id: "site_a_example"
+name: "Example Primary Residence"
+resident: "Household A"
+
+address:
+  city: "Example City"
+  region: "Flanders / EU"
+
+grid_operator: "Fluvius (Example DSO)"
+
+electricity:
+  ean: "541440000000000001"
+  meter_type: "Digital Smart Meter (P1 DSMR)"
+  annual_import_kwh: 4500
+  annual_export_kwh: 4800
+  capacity_peak_kw: 5.0
+  solar_pv:
+    installed: true
+    inverter: "Example Hybrid Inverter 5kW"
+    capacity_kwp: 4.8
+  battery:
+    installed: true
+    type: "Residential 3-Phase Storage"
+
+gas:
+  ean: "541440000000000002"
+  meter_type: "Digital Gas Meter"
+  annual_consumption_kwh: 14000
+  heating_system: "Hybrid Heat Pump + Condensing Boiler"
+
+current_contract:
+  provider: "Example Energy"
+  product: "Dynamic Hourly"
+  pricing_type: "Dynamic (EPEX / Belpex Spot)"

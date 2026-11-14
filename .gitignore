@@ -34,3 +34,8 @@ Thumbs.db
 .idea/
 *.swp
 *.bak
+
+# Personal & Local Site Profiles (DLP Guard — only example_*.yaml may be tracked)
+config/sites/*.yaml
+!config/sites/example_*.yaml
+
